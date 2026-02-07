@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
-  } catch (err) {
-    console.error("MongoDB connection failed", err);
-    process.exit(1);
-  }
-};
+const DB_NAME = process.env.DB_NAME || "discord";
 
-export default connectDB;
+export const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI + `/${DB_NAME}`, {
+            dbName: DB_NAME,
+        });
+        console.log("Connected to MongoDB");
+    } catch (error) {
+        console.error("Failed to connect to MongoDB", error);
+        process.exit(1);
+    }
+};
