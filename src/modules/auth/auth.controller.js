@@ -6,8 +6,6 @@ import jwt from "jsonwebtoken"
 import User from "../users/user.model.js"
 import { generateAccessToken, generateRefreshToken } from "../../utils/token.js"
 
-
-
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body
     if ([username, email, password].some(field => field.trim() === '')) {
