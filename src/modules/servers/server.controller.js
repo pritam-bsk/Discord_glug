@@ -52,3 +52,14 @@ export const deleteServer = async (req, res, next) => {
   await Server.findByIdAndDelete(id);
   res.json({ message: "Server deleted successfully" });
 };
+
+export const getServerChannels = async (req, res, next) => {
+  const { serverId } = req.params
+  const userId = req.user.userId
+  const membership = await Member.findOne({ serverId, userId })
+  if (!membership) {
+    throw new ApiError(403, "Forbidden: You are not a member of this server")
+  }
+  const channels = await Channel.find({ serverId })
+  res.json(channels)
+};
