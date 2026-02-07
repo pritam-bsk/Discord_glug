@@ -1,9 +1,9 @@
-import { Router } from "express";
-import auth from "../../middlewares/auth.middleware.js";
-import { createChannel } from "../channels/channel.controller.js";
+import { Router } from "express"
+import auth from "../../middlewares/auth.middleware.js"
+import { createChannel } from "../channels/channel.controller.js"
 
-const router = Router();
+const router = Router()
 
-router.post("/", auth, createChannel);
+router.post("/", auth, createChannel)
 
-export default router;
+export default router 

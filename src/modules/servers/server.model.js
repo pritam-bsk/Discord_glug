@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const serverSchema = new mongoose.Schema(
   {
@@ -13,6 +13,6 @@ const serverSchema = new mongoose.Schema(
     }
   },
   { timestamps: true }
-);
+)
 
-export default mongoose.model("Server", serverSchema);
+export default mongoose.model("Server", serverSchema) 

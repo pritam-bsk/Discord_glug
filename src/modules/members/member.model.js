@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const memberSchema = new mongoose.Schema(
   {
@@ -19,8 +19,8 @@ const memberSchema = new mongoose.Schema(
     }
   },
   { timestamps: true }
-);
+)
 
-memberSchema.index({ serverId: 1, userId: 1 }, { unique: true });
+memberSchema.index({ serverId: 1, userId: 1 }, { unique: true })
 
-export default mongoose.model("Member", memberSchema);
+export default mongoose.model("Member", memberSchema) 
