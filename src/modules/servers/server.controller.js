@@ -4,7 +4,7 @@ import Channel from "../channels/channel.model.js"
 import ApiError from "../../utils/ApiError.js"
 import asyncHandler from "../../utils/asyncHandler.js"
 
-export const createServer = asyncHandler(async (req, res, next) => {
+export const createServer = asyncHandler(async (req, res) => {
   const { name } = req.body
   if (!name) {
     throw new ApiError(400, "Server name is required")
@@ -27,13 +27,13 @@ export const createServer = asyncHandler(async (req, res, next) => {
   res.status(201).json(server)
 })
 
-export const getUserServers = asyncHandler(async (req, res, next) => {
-  const memberships = await Member.find({ userId: req.user.userId }).populate("serverId")
-  const servers = memberships.map(membership => membership.serverId)
+export const getUserServers = asyncHandler(async (req, res) => {
+  const members = await Member.find({ userId: req.user.userId }).populate("serverId")
+  const servers = members.map(member => member.serverId)
   res.json(servers)
 })
 
-export const getServerById = asyncHandler(async (req, res, next) => {
+export const getServerById = asyncHandler(async (req, res) => {
   const { id } = req.params
   const server = await Server.findById(id)
   if (!server) {
@@ -42,7 +42,7 @@ export const getServerById = asyncHandler(async (req, res, next) => {
   res.json(server)
 })
 
-export const deleteServer = asyncHandler(async (req, res, next) => {
+export const deleteServer = asyncHandler(async (req, res) => {
   const { id } = req.params
   const server = await Server.findById(id)
   if (!server) {
@@ -55,7 +55,7 @@ export const deleteServer = asyncHandler(async (req, res, next) => {
   res.json({ message: "Server deleted successfully" })
 })
 
-export const getServerChannels = asyncHandler(async (req, res, next) => {
+export const getServerChannels = asyncHandler(async (req, res) => {
   const { serverId } = req.params
   const userId = req.user.userId
   const membership = await Member.findOne({ serverId, userId })

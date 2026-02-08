@@ -24,22 +24,17 @@ const registerUser = asyncHandler(async (req, res) => {
         username: username,
         email: email,
         passwordHash: passwordHash,
-    })
-    if (!user) {
-        throw new ApiError(500, "Failed to create user")
-    }
-
+    });
     res.status(201).json(
         new ApiResponse(201, { id: user._id, username: user.username, email: user.email },
             "User registered successfully")
     )
-})
+});
 
 const loginUser = asyncHandler(async (req, res) => {
     // console.log("loginnnnn") 
-
     const { email, username, password } = req.body
-    // console.log(email) 
+    // console.log(email);
 
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")
@@ -51,14 +46,13 @@ const loginUser = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "Invalid credentials")
     }
-    const isMatch = await bcrypt.compare(password, user.passwordHash)
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
         throw new ApiError(400, "Invalid credentials")
     }
 
-    const payload = { userId: user._id, username: user.username }
-    const accessToken = generateAccessToken(payload)
-    const refreshToken = generateRefreshToken(payload)
+    const accessToken = generateAccessToken({ userId: user._id, username: user.username })
+    const refreshToken = generateRefreshToken({ userId: user._id, username: user.username })
     const hashedRefresh = await bcrypt.hash(refreshToken, 10)
     await User.updateOne(
         { _id: user._id },
@@ -67,7 +61,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.status(200).json(
         new ApiResponse(200, { accessToken, refreshToken }, "User logged in successfully")
-    )
+    );
 })
 
 const refreshTokens = asyncHandler(async function (req, res) {
