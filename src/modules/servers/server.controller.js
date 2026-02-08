@@ -2,8 +2,9 @@ import Server from "./server.model.js"
 import Member from "../members/member.model.js"
 import Channel from "../channels/channel.model.js"
 import ApiError from "../../utils/ApiError.js"
+import asyncHandler from "../../utils/asyncHandler.js"
 
-export const createServer = async (req, res, next) => {
+export const createServer = asyncHandler(async (req, res, next) => {
   const { name } = req.body
   if (!name) {
     throw new ApiError(400, "Server name is required")
@@ -14,7 +15,8 @@ export const createServer = async (req, res, next) => {
   })
   await Member.create({
     serverId: server._id,
-    userId: req.user.userId
+    userId: req.user.userId,
+    role: "OWNER"
   })
   await Channel.create({
     serverId: server._id,
@@ -23,24 +25,24 @@ export const createServer = async (req, res, next) => {
   })
 
   res.status(201).json(server)
-}
+})
 
-export const getUserServers = async (req, res, next) => {
+export const getUserServers = asyncHandler(async (req, res, next) => {
   const memberships = await Member.find({ userId: req.user.userId }).populate("serverId")
   const servers = memberships.map(membership => membership.serverId)
   res.json(servers)
-}
+})
 
-export const getServerById = async (req, res, next) => {
+export const getServerById = asyncHandler(async (req, res, next) => {
   const { id } = req.params
   const server = await Server.findById(id)
   if (!server) {
     throw new ApiError(404, "Server not found")
   }
   res.json(server)
-}
+})
 
-export const deleteServer = async (req, res, next) => {
+export const deleteServer = asyncHandler(async (req, res, next) => {
   const { id } = req.params
   const server = await Server.findById(id)
   if (!server) {
@@ -51,9 +53,9 @@ export const deleteServer = async (req, res, next) => {
   }
   await Server.findByIdAndDelete(id)
   res.json({ message: "Server deleted successfully" })
-}
+})
 
-export const getServerChannels = async (req, res, next) => {
+export const getServerChannels = asyncHandler(async (req, res, next) => {
   const { serverId } = req.params
   const userId = req.user.userId
   const membership = await Member.findOne({ serverId, userId })
@@ -62,4 +64,4 @@ export const getServerChannels = async (req, res, next) => {
   }
   const channels = await Channel.find({ serverId })
   res.json(channels)
-} 
+}) 

@@ -1,0 +1,54 @@
+import Invite from "../invite/invite.model.js";
+import Member from "../members/member.model.js";
+import { generateInviteCode } from "../../utils/inviteCode.js";
+import ApiResponse from "../../utils/ApiResponse.js";
+import ApiError from "../../utils/ApiError.js";
+
+export const createInvite = async (req, res) => {
+  const { serverId } = req.params;
+  const { channelId, expiresIn, maxUses } = req.body;
+  const invite = await Invite.create({
+    code: generateInviteCode(),
+    serverId,
+    channelId,
+    createdBy: req.user.userId,
+    expiresAt: expiresIn
+      ? new Date(Date.now() + expiresIn * 1000)
+      : null,
+    maxUses: maxUses || null,
+  });
+
+    res.status(201).json(new ApiResponse(201, invite, "Invite created successfully"));
+};
+
+export const joinViaInvite = async (req, res) => {
+  const { code } = req.params;
+  const userId = req.user.userId;
+
+  const invite = await Invite.findOne({ code });
+  if (!invite) return res.status(404).json(new ApiError(404, "Invalid invite"));
+
+  if (invite.expiresAt && invite.expiresAt < new Date())
+    return res.status(400).json(new ApiError(400, "Invite expired"));
+
+  if (invite.maxUses && invite.uses >= invite.maxUses)
+    return res.status(400).json(new ApiError(400, "Invite exhausted"));
+
+  const existing = await Member.findOne({
+    serverId: invite.serverId,
+    userId,
+  });
+  if (existing)
+    return res.status(400).json(new ApiError(400, "Already a member"));
+
+  await Member.create({
+    serverId: invite.serverId,
+    userId,
+    role: "MEMBER",
+  });
+
+  invite.uses += 1;
+  await invite.save();
+
+  res.json(new ApiResponse(200, { serverId: invite.serverId, channelId: invite.channelId }, "Joined server successfully"));
+};

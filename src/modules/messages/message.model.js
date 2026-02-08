@@ -24,4 +24,5 @@ const messageSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+messageSchema.index({ channelId: 1, createdAt: -1 });
 export default mongoose.model("Message", messageSchema) 

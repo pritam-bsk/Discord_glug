@@ -56,7 +56,7 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid credentials")
     }
 
-    const payload = { userId: user._id }
+    const payload = { userId: user._id, username: user.username }
     const accessToken = generateAccessToken(payload)
     const refreshToken = generateRefreshToken(payload)
     const hashedRefresh = await bcrypt.hash(refreshToken, 10)
@@ -89,7 +89,7 @@ const refreshTokens = asyncHandler(async function (req, res) {
         throw new ApiError(401, "refresh token did not match")
     }
 
-    const payload = { userId: user._id }
+    const payload = { userId: user._id, username: user.username }
     const newAccessToken = generateAccessToken(payload)
     const newRefreshToken = generateRefreshToken(payload)
     const hashedRefresh = await bcrypt.hash(newRefreshToken, 10)

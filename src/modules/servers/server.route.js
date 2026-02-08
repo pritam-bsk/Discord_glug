@@ -1,11 +1,13 @@
 import { Router } from "express"
 import auth from "../../middlewares/auth.middleware.js"
-import { createServer } from "./server.controller.js"
-import { getServerChannels } from "./server.controller.js"
+import { createServer, getUserServers, getServerChannels } from "./server.controller.js"
+import { createInvite } from "../invite/invite.controller.js"
 
 const router = Router()
 
+router.get("/", auth, getUserServers)
 router.post("/", auth, createServer)
 router.get("/:serverId/channels", auth, getServerChannels)
+router.post("/:serverId/invites", auth, createInvite)
 
 export default router 
