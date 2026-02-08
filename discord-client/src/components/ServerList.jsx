@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMyServers, createServer } from "../api/auth.api";
+import { getMyServers, createServer, joinViaInvite } from "../api/auth.api";
 
 export default function ServerList({ selectedServerId, onSelect }) {
   const [servers, setServers] = useState([]);
@@ -24,6 +24,20 @@ export default function ServerList({ selectedServerId, onSelect }) {
       onSelect(res.data);
     } catch (err) {
       alert("Failed to create server");
+    }
+  };
+
+  const handleJoinServer = async () => {
+    const code = prompt("Enter invite code");
+    if (!code) return;
+
+    try {
+      await joinViaInvite(code.trim());
+      alert("Joined server!");
+      fetchServers();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to join: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -55,6 +69,19 @@ export default function ServerList({ selectedServerId, onSelect }) {
         }}
       >
         +
+      </div>
+
+      {/* Join server button */}
+      <div
+        onClick={handleJoinServer}
+        style={{
+          padding: 10,
+          cursor: "pointer",
+          color: "#5865f2",
+          fontWeight: "bold",
+        }}
+      >
+        ⮑
       </div>
     </div>
   );

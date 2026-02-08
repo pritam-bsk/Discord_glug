@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { getServerChannels, createChannel } from "../api/auth.api";
+import { getServerChannels, createChannel, createInvite } from "../api/auth.api";
 
 export default function ChannelList({ serverId, selectedChannel, onSelect }) {
   const [channels, setChannels] = useState([]);
+  const [inviteCode, setInviteCode] = useState("");
 
   useEffect(() => {
     if (!serverId) return;
@@ -22,6 +23,25 @@ export default function ChannelList({ serverId, selectedChannel, onSelect }) {
       onSelect(res.data.data);
     } catch {
       alert("Failed to create channel");
+    }
+  };
+
+  const handleGenerateInvite = async () => {
+    try {
+      const res = await createInvite(serverId, {});
+      const code = res.data.data?.code || res.data.code;
+      setInviteCode(code);
+
+      // Try to copy to clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(code);
+        alert("Invite code copied: " + code);
+      } else {
+        alert("Invite code: " + code + "\n(Copy manually - clipboard not available)");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate invite");
     }
   };
 
@@ -50,6 +70,19 @@ export default function ChannelList({ serverId, selectedChannel, onSelect }) {
       >
         + Add Channel
       </div>
+
+      <div
+        onClick={handleGenerateInvite}
+        style={{ marginTop: 5, cursor: "pointer", color: "#5865f2" }}
+      >
+        📤 Invite
+      </div>
+
+      {inviteCode && (
+        <div style={{ marginTop: 10, fontSize: 11, color: "#999", wordBreak: "break-all" }}>
+          Code: {inviteCode}
+        </div>
+      )}
     </div>
   );
 }
