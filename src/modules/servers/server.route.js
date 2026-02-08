@@ -10,6 +10,5 @@ router.get("/", auth, getUserServers)
 router.post("/", auth, createServer)
 router.get("/:serverId/channels", auth, getServerChannels)
 router.post("/:serverId/channels", auth, createChannel)
-router.post("/:serverId/invites", auth, createInvite)
 
 export default router 

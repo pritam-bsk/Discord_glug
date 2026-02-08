@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { socket } from "../socket/socket";
-import { getChannelMessages } from "../api/auth.api";
+import { getChannelMessages, getUserById } from "../api/auth.api";
 
 export default function MessageList({ channelId }) {
     const [messages, setMessages] = useState([]);

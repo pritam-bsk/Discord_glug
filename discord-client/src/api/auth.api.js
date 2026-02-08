@@ -12,5 +12,9 @@ export const getServerChannels = (serverId) => api.get(`/servers/${serverId}/cha
 export const createChannel = (serverId, data) => api.post(`/servers/${serverId}/channels`, data);
 
 export const getChannelMessages = (channelId) => api.get(`/messages/${channelId}`);
-export const getUserById = (userId) => api.get(`users/${userId}`)
+export const getUserById = (userId) => api.get(`users/${userId}`);
+
+export const createInvite = (serverId, data) => api.post(`/invites/create/${serverId}`, data);
+export const joinViaInvite = (code) => api.post(`/invites/join/${code}`);
+
 
