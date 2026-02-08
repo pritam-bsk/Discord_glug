@@ -130,4 +130,14 @@ const logout = asyncHandler(async (req, res) => {
 })
 
 
-export { registerUser, loginUser, refreshTokens, logout } 
+const getMe = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user.userId).select("-passwordHash -refreshToken")
+    if (!user) {
+        throw new ApiError(404, "User not found")
+    }
+    res.status(200).json(
+        new ApiResponse(200, { userId: user._id, username: user.username, email: user.email }, "User fetched successfully")
+    )
+})
+
+export { registerUser, loginUser, refreshTokens, logout, getMe } 
