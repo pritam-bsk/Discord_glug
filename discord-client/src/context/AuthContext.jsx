@@ -13,7 +13,9 @@ export const AuthProvider = ({ children }) => {
             .catch(() => setUser(null))
             .finally(() => setLoading(false));
     }, []);
-
+    useEffect(()=>{
+        
+    })
     return (
         <AuthContext.Provider value={{ user, setUser, loading }}>
             {children}

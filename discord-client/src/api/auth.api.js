@@ -10,3 +10,7 @@ export const createServer = (data) => api.post("/servers", data);
 
 export const getServerChannels = (serverId) => api.get(`/servers/${serverId}/channels`);
 export const createChannel = (serverId, data) => api.post(`/servers/${serverId}/channels`, data);
+
+export const getChannelMessages = (channelId) => api.get(`/messages/${channelId}`);
+export const getUserById = (userId) => api.get(`users/${userId}`)
+

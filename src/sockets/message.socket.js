@@ -27,13 +27,9 @@ export const registerMessageEvents = async (io, socket) => {
       content
     })
 
-    io.to(`channel:${channelId}`).emit("message:new", {
-      _id: message._id,
-      channelId,
-      senderId: socket.user.userId,
-      content,
-      createdAt: message.createdAt
-    })
+    const populatedMessage = await Message.findById(message._id).populate('senderId', 'username')
+
+    io.to(`channel:${channelId}`).emit("message:new", populatedMessage)
   })
 
 } 

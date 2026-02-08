@@ -2,7 +2,6 @@ import { useState } from "react";
 import { login } from "../api/auth.api";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -10,7 +9,7 @@ export default function Login() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        
+
         e.preventDefault();
         try {
             console.log("handelSubmit")
@@ -21,6 +20,7 @@ export default function Login() {
             console.log(res.data.data.accessToken)
             const tokenPayload = JSON.parse(atob(res.data.data.accessToken.split('.')[1]));
             setUser({ userId: tokenPayload.userId, username: tokenPayload.username });
+
 
             navigate("/");
         } catch (err) {

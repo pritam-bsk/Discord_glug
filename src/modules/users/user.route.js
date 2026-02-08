@@ -1,6 +1,7 @@
 import { Router } from "express"
 import authMiddleware from "../../middlewares/auth.middleware.js"
 import User from "./user.model.js"
+import { getUserById } from "./user.controller.js"
 
 const router = Router()
 router.get("/me", authMiddleware, async (req, res) => {
@@ -12,5 +13,7 @@ router.get("/me", authMiddleware, async (req, res) => {
 
     res.json(user)
 })
+router.get("/:userid", getUserById)
+
 
 export default router 

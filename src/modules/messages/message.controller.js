@@ -24,6 +24,6 @@ export const getChannelMessages = asyncHandler(async (req, res, next) => {
     }
     console.log("membership", membership);
     console.log(channelId);
-    const messages = await Message.find({ channelId, deleted: false }).sort({ createdAt: -1 }).limit(limit || 30)
+    const messages = await Message.find({ channelId, deleted: false }).sort({ createdAt: 1 }).limit(limit || 30)
     res.json(messages)
 })

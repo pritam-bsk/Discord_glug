@@ -11,6 +11,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("hit123456")
       await register({ username, email, password });
       navigate("/login");
     } catch (err) {
