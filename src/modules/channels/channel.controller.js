@@ -5,7 +5,8 @@ import Channel from "./channel.model.js"
 import Server from "../servers/server.model.js"
 
 export const createChannel = asyncHandler(async (req, res) => {
-    const { name, serverId, type } = req.body
+    const { name, type } = req.body
+    const { serverId } = req.params
     if (![name, serverId].every(field => field && field.trim() !== '')) {
         throw new ApiError(400, "Name and serverId are required")
     }
