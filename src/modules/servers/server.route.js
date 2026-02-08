@@ -5,7 +5,6 @@ import { createChannel } from "../channels/channel.controller.js"
 import { createInvite } from "../invite/invite.controller.js"
 
 const router = Router()
-
 router.get("/", auth, getUserServers)
 router.post("/", auth, createServer)
 router.get("/:serverId/channels", auth, getServerChannels)

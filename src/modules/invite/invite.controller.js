@@ -7,16 +7,12 @@ import asyncHandler from "../../utils/asyncHandler.js";
 
 export const createInvite = asyncHandler(async (req, res) => {
   const { serverId } = req.params;
-  const { channelId, expiresIn, maxUses } = req.body;
+  const { channelId } = req.body;
   const invite = await Invite.create({
     code: generateInviteCode(),
     serverId,
     channelId,
     createdBy: req.user.userId,
-    expiresAt: expiresIn
-      ? new Date(Date.now() + expiresIn * 1000)
-      : null,
-    maxUses: maxUses || null,
   });
 
     res.status(201).json(new ApiResponse(201, invite, "Invite created successfully"));
@@ -28,12 +24,6 @@ export const joinViaInvite = asyncHandler(async (req, res) => {
 
   const invite = await Invite.findOne({ code });
   if (!invite) throw new ApiError(404, "Invalid invite");
-
-  if (invite.expiresAt && invite.expiresAt < new Date())
-    throw new ApiError(400, "Invite expired");
-
-  if (invite.maxUses && invite.uses >= invite.maxUses)
-    throw new ApiError(400, "Invite exhausted");
 
   const existing = await Member.findOne({
     serverId: invite.serverId,
@@ -47,8 +37,6 @@ export const joinViaInvite = asyncHandler(async (req, res) => {
     userId,
     role: "MEMBER",
   });
-
-  invite.uses += 1;
   await invite.save();
 
   res.json(new ApiResponse(200, { serverId: invite.serverId, channelId: invite.channelId }, "Joined server successfully"));
